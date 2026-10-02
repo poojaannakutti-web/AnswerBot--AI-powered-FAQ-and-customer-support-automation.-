@@ -1,0 +1,128 @@
+TECHNICAL ARCHITECTURE
+Paste this:
+The Product Inventory Management System follows a three-layer architecture consisting of the Presentation Layer, Application Layer, and Database Layer. The Presentation Layer provides the user interface for managing products and inventory. The Application Layer handles business logic such as adding, updating, deleting, searching, and checking product stock. The Database Layer stores product information including Product ID, Product Name, Category, Quantity, Price, and Supplier details. The system can be developed using HTML, CSS, JavaScript, Python Flask, and SQLite/MySQL.
+2. ER DIAGRAM
+Paste this:
+The Entity Relationship Diagram represents the relationship between the main entities of the Product Inventory Management System. The Product entity stores product details such as Product ID, Product Name, Category, Quantity, Price, and Supplier ID. The Supplier entity stores Supplier ID, Supplier Name, Contact Number, and Address. A supplier can provide multiple products, while each product belongs to one supplier.
+ER structure:
+SUPPLIER
+---------
+Supplier_ID (PK)
+Supplier_Name
+Contact
+Address
+     |
+     | 1 : M
+     |
+PRODUCT
+---------
+Product_ID (PK)
+Product_Name
+Category
+Quantity
+Price
+Supplier_ID (FK)
+3. FEATURES
+Paste this:
+The main features of the Product Inventory Management System are:
+Add new products
+Update product details
+Delete products
+Search products
+View all products
+Track available stock quantity
+Manage product categories
+Maintain supplier information
+Identify low-stock products
+Store and retrieve inventory data efficiently
+4. ROLES AND RESPONSIBILITY
+Paste this:
+The system mainly involves the Admin or Inventory Manager and the system itself. The Admin is responsible for adding new products, updating product information, deleting products, checking stock levels, searching products, and maintaining supplier details. The system validates the entered information, stores the data in the database, retrieves inventory records, and displays the required information to the user.
+Roles:
+Admin / Inventory Manager
+        |
+        |-- Add Product
+        |-- Update Product
+        |-- Delete Product
+        |-- Search Product
+        |-- View Inventory
+        |-- Check Stock
+        |-- Manage Suppliers
+5. USER FLOW
+Paste this:
+START
+  |
+  v
+Login / Open System
+  |
+  v
+Dashboard
+  |
+  +------ Add Product
+  |
+  +------ View Products
+  |
+  +------ Search Product
+  |
+  +------ Update Product
+  |
+  +------ Delete Product
+  |
+  +------ Check Stock
+  |
+  v
+Database
+  |
+  v
+Display Updated Information
+  |
+  v
+END
+Description:
+The user first opens the Product Inventory Management System and accesses the dashboard. From the dashboard, the user can add, view, search, update, or delete products. The system processes the request and stores or retrieves the required information from the database. Finally, the updated inventory information is displayed to the user.
+💻 SAMPLE CODE
+If SkillWallet asks for code, you can use this simple Flask + SQLite code:
+from flask import Flask, request, render_template
+import sqlite3
+
+app = Flask(__name__)
+
+def get_db():
+    conn = sqlite3.connect("inventory.db")
+    conn.row_factory = sqlite3.Row
+    return conn
+
+@app.route("/")
+def home():
+    conn = get_db()
+    products = conn.execute("SELECT * FROM products").fetchall()
+    conn.close()
+    return render_template("index.html", products=products)
+
+@app.route("/add", methods=["POST"])
+def add_product():
+    name = request.form["name"]
+    category = request.form["category"]
+    quantity = request.form["quantity"]
+    price = request.form["price"]
+
+    conn = get_db()
+    conn.execute(
+        "INSERT INTO products(name, category, quantity, price) VALUES (?, ?, ?, ?)",
+        (name, category, quantity, price)
+    )
+    conn.commit()
+    conn.close()
+
+    return "Product added successfully"
+
+if __name__ == "__main__":
+    app.run(debug=True)
+Database table:
+CREATE TABLE products (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    category TEXT,
+    quantity INTEGER,
+    price REAL
+);
